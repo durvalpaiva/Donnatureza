@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Estoque - Sistema Donnatureza</title>
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="/static/img/DonnaturezaLogo.png" alt="Donnatureza" class="logo">
+                    <div class="header-text">
+                        <h1>Sistema Donnatureza</h1>
+                    </div>
+                </div>
+                <nav class="header-nav">
+                    <a href="/">Início</a>
+                    <a href="/produtos">Produtos</a>
+                    <a href="/vendas">Vendas</a>
+                    <a href="/catalogo">Catálogo</a>
+                    <a href="/estoque" class="active">Estoque</a>
+                    <a href="/relatorios">Relatórios</a>
+                </nav>
+            </div>
+        </header>
+        
+        <main>
+            <div class="page-header">
+                <h2>📦 Controle de Estoque</h2>
+                <div class="header-actions">
+                    <button id="btnNovaEntrada" class="btn-primary">➕ Nova Entrada</button>
+                    <button id="btnInventario" class="btn-secondary">📊 Inventário</button>
+                </div>
+            </div>
+            
+            <!-- Alertas de Estoque -->
+            <div class="estoque-alertas">
+                <div class="alert-card alert-low" id="alertaEstoqueBaixo" style="display: none;">
+                    <div class="alert-header">
+                        <h3>⚠️ Estoque Baixo</h3>
+                        <span class="alert-count" id="countEstoqueBaixo">0</span>
+                    </div>
+                    <div class="alert-content">
+                        <div id="produtosEstoqueBaixo"></div>
+                    </div>
+                </div>
+                
+                <div class="alert-card alert-high" id="alertaEstoqueAlto" style="display: none;">
+                    <div class="alert-header">
+                        <h3>📈 Estoque Alto</h3>
+                        <span class="alert-count" id="countEstoqueAlto">0</span>
+                    </div>
+                    <div class="alert-content">
+                        <div id="produtosEstoqueAlto"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resumo do Estoque -->
+            <div class="estoque-resumo">
+                <div class="resumo-card">
+                    <h3>📋 Resumo Geral</h3>
+                    <div class="resumo-stats">
+                        <div class="stat">
+                            <span class="stat-label">Total de Produtos:</span>
+                            <span class="stat-value" id="totalProdutos">-</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Valor Total em Estoque:</span>
+                            <span class="stat-value" id="valorTotalEstoque">R$ -</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Produtos Estoque Baixo:</span>
+                            <span class="stat-value" id="produtosEstoqueBaixoCount">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtros -->
+            <div class="filtros-estoque">
+                <div class="form-group">
+                    <label for="filtroCategoria">Categoria:</label>
+                    <select id="filtroCategoria">
+                        <option value="">Todas as categorias</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="filtroStatus">Status:</label>
+                    <select id="filtroStatus">
+                        <option value="">Todos</option>
+                        <option value="baixo">Estoque Baixo</option>
+                        <option value="normal">Normal</option>
+                        <option value="alto">Estoque Alto</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" id="buscaProduto" placeholder="Buscar produto...">
+                </div>
+            </div>
+            
+            <!-- Lista de Produtos -->
+            <div class="estoque-lista">
+                <div class="table-container">
+                    <table id="tabelaEstoque">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Categoria</th>
+                                <th>Estoque Atual</th>
+                                <th>Mín/Máx</th>
+                                <th>Valor Unit.</th>
+                                <th>Valor Total</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="8" class="loading">Carregando produtos...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Últimas Movimentações -->
+            <div class="movimentacoes-recentes">
+                <h3>🔄 Últimas Movimentações</h3>
+                <div class="table-container">
+                    <table id="tabelaMovimentacoes">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Produto</th>
+                                <th>Tipo</th>
+                                <th>Quantidade</th>
+                                <th>Ant → Nova</th>
+                                <th>Motivo</th>
+                                <th>Usuário</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="7" class="loading">Carregando movimentações...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal Nova Entrada -->
+    <div id="modalNovaEntrada" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ Nova Entrada de Estoque</h3>
+                <button class="modal-close" onclick="closeModal('modalNovaEntrada')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formNovaEntrada">
+                    <div class="form-group">
+                        <label for="entradaProduto">Produto:</label>
+                        <select id="entradaProduto" required>
+                            <option value="">Selecione um produto...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="entradaQuantidade">Quantidade:</label>
+                        <input type="number" id="entradaQuantidade" min="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="entradaPreco">Preço Unitário (opcional):</label>
+                        <input type="number" id="entradaPreco" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="entradaMotivo">Motivo:</label>
+                        <input type="text" id="entradaMotivo" value="Entrada de estoque" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="entradaDocumento">Documento (opcional):</label>
+                        <input type="text" id="entradaDocumento" placeholder="NF, Pedido, etc.">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('modalNovaEntrada')">Cancelar</button>
+                <button type="button" class="btn-primary" onclick="salvarEntrada()">💾 Salvar Entrada</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Ajuste Estoque -->
+    <div id="modalAjusteEstoque" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚖️ Ajuste de Estoque</h3>
+                <button class="modal-close" onclick="closeModal('modalAjusteEstoque')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="ajusteProdutoInfo" class="produto-info"></div>
+                <form id="formAjusteEstoque">
+                    <div class="form-group">
+                        <label for="ajusteQuantidadeNova">Nova Quantidade:</label>
+                        <input type="number" id="ajusteQuantidadeNova" min="0" required>
+                        <small>Atual: <span id="ajusteQuantidadeAtual">0</span></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ajusteMotivo">Motivo:</label>
+                        <select id="ajusteMotivo" required>
+                            <option value="Inventário físico">Inventário físico</option>
+                            <option value="Correção de erro">Correção de erro</option>
+                            <option value="Perda/Avaria">Perda/Avaria</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('modalAjusteEstoque')">Cancelar</button>
+                <button type="button" class="btn-primary" onclick="salvarAjuste()">💾 Salvar Ajuste</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Inventário -->
+    <div id="modalInventario" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>📊 Inventário Físico</h3>
+                <button class="modal-close" onclick="closeModal('modalInventario')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Use esta função para fazer contagem física do estoque e ajustar automaticamente as diferenças encontradas.</p>
+                <div class="inventario-info">
+                    <p><strong>⚠️ Atenção:</strong> Esta função criará movimentações de ajuste para todos os produtos com diferenças.</p>
+                </div>
+                <div class="inventario-actions">
+                    <button class="btn-primary" onclick="iniciarInventario()">📋 Iniciar Inventário</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/estoque.js"></script>
+</body>
+</html>

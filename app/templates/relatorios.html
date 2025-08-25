@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Sistema Donnatureza</title>
+    <link href="/static/css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="/static/img/DonnaturezaLogo.png" alt="Donnatureza" class="logo">
+                    <div class="header-text">
+                        <h1>Sistema Donnatureza</h1>
+                    </div>
+                </div>
+                <nav class="header-nav">
+                    <a href="/">Início</a>
+                    <a href="/produtos">Produtos</a>
+                    <a href="/vendas">Vendas</a>
+                    <a href="/catalogo">Catálogo</a>
+                    <a href="/relatorios" class="active">Relatórios</a>
+                </nav>
+            </div>
+        </header>
+        
+        <main>
+            <h2>Relatórios</h2>
+            
+            <div class="relatorio-cards">
+                <div class="card">
+                    <h3>Vendas de Hoje</h3>
+                    <div id="vendasHoje">
+                        <p class="valor-destaque">R$ <span id="totalHoje">0,00</span></p>
+                        <p><span id="quantidadeHoje">0</span> vendas</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Produtos em Estoque Baixo</h3>
+                    <div id="estoqueBaixo">
+                        <p class="loading">Carregando...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relatorio-periodo">
+                <h3>Vendas por Período</h3>
+                <div class="filtros">
+                    <div class="form-group">
+                        <label for="dataInicio">Data Início:</label>
+                        <input type="date" id="dataInicio">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dataFim">Data Fim:</label>
+                        <input type="date" id="dataFim">
+                    </div>
+                    
+                    <button id="btnFiltrar" class="btn-primary">Filtrar</button>
+                </div>
+                
+                <div id="resultadoPeriodo" class="resultado-periodo">
+                    <div class="resumo-periodo">
+                        <div class="resumo-item">
+                            <span>Total Vendas:</span>
+                            <strong>R$ <span id="totalPeriodo">0,00</span></strong>
+                        </div>
+                        <div class="resumo-item">
+                            <span>Quantidade:</span>
+                            <strong><span id="quantidadePeriodo">0</span></strong>
+                        </div>
+                        <div class="resumo-item">
+                            <span>Ticket Médio:</span>
+                            <strong>R$ <span id="ticketMedio">0,00</span></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="graficos">
+                <div class="grafico-container">
+                    <h3>Produtos Mais Vendidos</h3>
+                    <canvas id="chartProdutos"></canvas>
+                </div>
+                
+                <div class="grafico-container">
+                    <h3>Formas de Pagamento</h3>
+                    <canvas id="chartPagamentos"></canvas>
+                </div>
+            </div>
+            
+            <div class="tabela-vendas">
+                <h3>Últimas Vendas</h3>
+                <div class="table-container">
+                    <table id="tabelaVendas">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data</th>
+                                <th>Total</th>
+                                <th>Pagamento</th>
+                                <th>Cliente</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/relatorios.js"></script>
+</body>
+</html>

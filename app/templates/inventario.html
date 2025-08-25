@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventário Físico - Sistema Donnatureza</title>
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="/static/img/DonnaturezaLogo.png" alt="Donnatureza" class="logo">
+                    <div class="header-text">
+                        <h1>Sistema Donnatureza</h1>
+                    </div>
+                </div>
+                <nav class="header-nav">
+                    <a href="/">Início</a>
+                    <a href="/produtos">Produtos</a>
+                    <a href="/vendas">Vendas</a>
+                    <a href="/catalogo">Catálogo</a>
+                    <a href="/estoque">Estoque</a>
+                    <a href="/relatorios">Relatórios</a>
+                </nav>
+            </div>
+        </header>
+        
+        <main>
+            <div class="page-header">
+                <h2>📋 Inventário Físico</h2>
+                <div class="header-actions">
+                    <button id="btnIniciarInventario" class="btn-primary">🚀 Iniciar Inventário</button>
+                    <button id="btnFinalizarInventario" class="btn-secondary" style="display: none;">✅ Finalizar Inventário</button>
+                    <a href="/estoque" class="btn-secondary">← Voltar ao Estoque</a>
+                </div>
+            </div>
+            
+            <!-- Status do Inventário -->
+            <div class="inventario-status">
+                <div class="status-card">
+                    <h3>📊 Status do Inventário</h3>
+                    <div class="status-info">
+                        <div class="status-item">
+                            <span>Total de Produtos:</span>
+                            <strong id="totalProdutos">0</strong>
+                        </div>
+                        <div class="status-item">
+                            <span>Produtos Contados:</span>
+                            <strong id="produtosContados">0</strong>
+                        </div>
+                        <div class="status-item">
+                            <span>Produtos Pendentes:</span>
+                            <strong id="produtosPendentes">0</strong>
+                        </div>
+                        <div class="status-item">
+                            <span>Diferenças Encontradas:</span>
+                            <strong id="diferencasEncontradas">0</strong>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" id="progressBar" style="width: 0%"></div>
+                    </div>
+                    <p class="progress-text"><span id="progressPercent">0</span>% concluído</p>
+                </div>
+            </div>
+            
+            <!-- Scanner de Produtos -->
+            <div class="inventario-scanner" id="inventarioScanner" style="display: none;">
+                <div class="scanner-card">
+                    <h3>📱 Scanner de Produtos</h3>
+                    <div class="scanner-content">
+                        <div class="scanner-input">
+                            <input type="text" id="codigoInput" placeholder="Digite ou escaneie o código de barras..." autofocus>
+                            <button type="button" class="btn-secondary" onclick="openInventoryBarcode()">📱 Scanner</button>
+                        </div>
+                        <div class="scanner-help">
+                            <p>💡 Digite o código de barras ou use o scanner de câmera</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Produto Atual -->
+            <div class="produto-atual" id="produtoAtual" style="display: none;">
+                <div class="produto-card-inventario">
+                    <div class="produto-header">
+                        <h3 id="produtoNome">-</h3>
+                        <span class="produto-codigo" id="produtoCodigo">-</span>
+                    </div>
+                    <div class="produto-info-grid">
+                        <div class="info-item">
+                            <label>Estoque Sistema:</label>
+                            <span id="estoqueSistema" class="estoque-sistema">0</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Contagem Física:</label>
+                            <input type="number" id="contagemFisica" min="0" step="1" placeholder="0">
+                        </div>
+                        <div class="info-item diferenca-item">
+                            <label>Diferença:</label>
+                            <span id="diferenca" class="diferenca">0</span>
+                        </div>
+                    </div>
+                    <div class="produto-actions">
+                        <button class="btn-primary" onclick="salvarContagem()">💾 Salvar Contagem</button>
+                        <button class="btn-secondary" onclick="pularProduto()">⏭️ Pular</button>
+                        <button class="btn-secondary" onclick="limparScanner()">🔄 Limpar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lista de Produtos do Inventário -->
+            <div class="inventario-lista">
+                <h3>📦 Produtos do Inventário</h3>
+                <div class="filtros-inventario">
+                    <div class="form-group">
+                        <select id="filtroStatus">
+                            <option value="">Todos os status</option>
+                            <option value="pendente">Pendentes</option>
+                            <option value="contado">Contados</option>
+                            <option value="diferenca">Com Diferença</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="buscarProduto" placeholder="Buscar produto...">
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="tabelaInventario">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Código</th>
+                                <th>Estoque Sistema</th>
+                                <th>Contagem Física</th>
+                                <th>Diferença</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="7" class="loading">Aguardando início do inventário...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Resumo de Diferenças -->
+            <div class="resumo-diferencas" id="resumoDiferencas" style="display: none;">
+                <h3>📊 Resumo de Diferenças</h3>
+                <div class="diferencas-grid">
+                    <div class="diferenca-card positiva">
+                        <h4>Sobras (+)</h4>
+                        <div class="diferenca-valor" id="sobrasProdutos">0 produtos</div>
+                        <div class="diferenca-quantidade" id="sobrasQuantidade">+0 unidades</div>
+                    </div>
+                    <div class="diferenca-card negativa">
+                        <h4>Faltas (-)</h4>
+                        <div class="diferenca-valor" id="faltasProdutos">0 produtos</div>
+                        <div class="diferenca-quantidade" id="faltasQuantidade">-0 unidades</div>
+                    </div>
+                    <div class="diferenca-card total">
+                        <h4>Total de Ajustes</h4>
+                        <div class="diferenca-valor" id="totalAjustes">0 produtos</div>
+                        <div class="diferenca-quantidade" id="totalMovimentacao">0 movimentações</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Barcode Scanner Modal for Inventory -->
+    <div id="inventoryBarcodeModal" class="camera-modal" style="display: none;">
+        <div class="camera-modal-content">
+            <div class="camera-header">
+                <h3>📱 Scanner - Inventário</h3>
+                <button class="camera-close" onclick="closeInventoryBarcode()">&times;</button>
+            </div>
+            <div class="camera-body">
+                <video id="inventoryBarcodeVideo" autoplay playsinline></video>
+                <div class="scan-line"></div>
+                <div class="scan-instructions">
+                    <p>📍 Posicione o código de barras na linha vermelha</p>
+                    <p id="inventoryScanResult" class="scan-result" style="display: none;"></p>
+                </div>
+            </div>
+            <div class="camera-controls">
+                <button class="btn-secondary" onclick="closeInventoryBarcode()">Fechar Scanner</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Finalizar Inventário -->
+    <div id="modalFinalizarInventario" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>✅ Finalizar Inventário</h3>
+                <button class="modal-close" onclick="closeModal('modalFinalizarInventario')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="finalizacao-warning">
+                    <h4>⚠️ Atenção</h4>
+                    <p>Ao finalizar o inventário, as seguintes ações serão executadas:</p>
+                    <ul>
+                        <li>Serão criadas movimentações de ajuste para todos os produtos com diferença</li>
+                        <li>Os estoques no sistema serão atualizados conforme a contagem física</li>
+                        <li>Esta ação não poderá ser desfeita</li>
+                    </ul>
+                </div>
+                
+                <div class="finalizacao-resumo">
+                    <h4>📊 Resumo Final</h4>
+                    <div class="resumo-final-grid">
+                        <div class="resumo-item">
+                            <span>Produtos Contados:</span>
+                            <strong id="finalContados">0</strong>
+                        </div>
+                        <div class="resumo-item">
+                            <span>Produtos com Diferença:</span>
+                            <strong id="finalDiferencas">0</strong>
+                        </div>
+                        <div class="resumo-item">
+                            <span>Ajustes a Realizar:</span>
+                            <strong id="finalAjustes">0</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="finalizacao-observacoes">
+                    <label for="observacoesFinalizacao">Observações (opcional):</label>
+                    <textarea id="observacoesFinalizacao" rows="3" placeholder="Observações sobre o inventário..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('modalFinalizarInventario')">Cancelar</button>
+                <button type="button" class="btn-primary" onclick="confirmarFinalizacao()">✅ Confirmar Finalização</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/inventario.js"></script>
+</body>
+</html>

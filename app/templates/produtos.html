@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos - Sistema Donnatureza</title>
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="/static/img/DonnaturezaLogo.png" alt="Donnatureza" class="logo">
+                    <div class="header-text">
+                        <h1>Sistema Donnatureza</h1>
+                    </div>
+                </div>
+                <nav class="header-nav">
+                    <a href="/">Início</a>
+                    <a href="/produtos" class="active">Produtos</a>
+                    <a href="/vendas">Vendas</a>
+                    <a href="/catalogo">Catálogo</a>
+                    <a href="/estoque">Estoque</a>
+                    <a href="/relatorios">Relatórios</a>
+                </nav>
+            </div>
+        </header>
+        
+        <main>
+            <h2>Gerenciar Produtos</h2>
+            
+            <div class="actions">
+                <button id="btnNovoProduto" class="btn-primary" onclick="showNewProductForm()">Novo Produto</button>
+                <input type="text" id="searchProduto" placeholder="Buscar produto...">
+            </div>
+            
+            <div id="produtoForm" class="form-container" style="display: none;">
+                <h3 id="formTitle">Novo Produto</h3>
+                <form id="formProduto">
+                    <input type="hidden" id="produtoId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nome">Nome:</label>
+                            <input type="text" id="nome" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="codigo_barras">Código de Barras:</label>
+                            <div class="barcode-input-group">
+                                <input type="text" id="codigo_barras" placeholder="Digite ou escaneie o código">
+                                <button type="button" class="btn-barcode" onclick="openBarcodeScanner()" title="Escanear código de barras">
+                                    📱 Escanear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="preco">Preço:</label>
+                            <input type="number" id="preco" step="0.01" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="estoque">Estoque:</label>
+                            <input type="number" id="estoque" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="categoria">Categoria:</label>
+                            <input type="text" id="categoria">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descricao">Descrição:</label>
+                        <textarea id="descricao" rows="3"></textarea>
+                    </div>
+                    
+                    <h4>Informações Fiscais</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ncm">NCM:</label>
+                            <input type="text" id="ncm" placeholder="00000000" maxlength="8" required>
+                            <small>Nomenclatura Comum do Mercosul</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cfop">CFOP:</label>
+                            <input type="text" id="cfop" value="5102" maxlength="4" required>
+                            <small>Código Fiscal de Operações</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="unidade_medida">Unidade:</label>
+                            <select id="unidade_medida" required>
+                                <option value="UN">Unidade (UN)</option>
+                                <option value="KG">Quilograma (KG)</option>
+                                <option value="L">Litro (L)</option>
+                                <option value="M">Metro (M)</option>
+                                <option value="M2">Metro Quadrado (M2)</option>
+                                <option value="M3">Metro Cúbico (M3)</option>
+                                <option value="PC">Peça (PC)</option>
+                                <option value="CX">Caixa (CX)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="origem">Origem:</label>
+                            <select id="origem" required>
+                                <option value="0">Nacional</option>
+                                <option value="1">Estrangeiro - Importação direta</option>
+                                <option value="2">Estrangeiro - Mercado interno</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <h5>Tributação ICMS</h5>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cst_icms">CST ICMS:</label>
+                            <select id="cst_icms" required>
+                                <option value="102">102 - Simples Nacional sem permissão</option>
+                                <option value="103">103 - Isenção do ICMS</option>
+                                <option value="300">300 - Imune</option>
+                                <option value="400">400 - Não tributada</option>
+                                <option value="500">500 - ICMS cobrado anteriormente</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="aliquota_icms">Alíquota ICMS (%):</label>
+                            <input type="number" id="aliquota_icms" step="0.01" min="0" max="100" value="0.00">
+                        </div>
+                    </div>
+                    
+                    <h5>Tributação PIS/COFINS</h5>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cst_pis">CST PIS:</label>
+                            <select id="cst_pis">
+                                <option value="07">07 - Operação Isenta</option>
+                                <option value="01">01 - Operação Tributável</option>
+                                <option value="06">06 - Operação Tributável Alíquota Zero</option>
+                                <option value="08">08 - Operação sem Incidência</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="aliquota_pis">Alíquota PIS (%):</label>
+                            <input type="number" id="aliquota_pis" step="0.0001" min="0" max="100" value="0.0000">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cst_cofins">CST COFINS:</label>
+                            <select id="cst_cofins">
+                                <option value="07">07 - Operação Isenta</option>
+                                <option value="01">01 - Operação Tributável</option>
+                                <option value="06">06 - Operação Tributável Alíquota Zero</option>
+                                <option value="08">08 - Operação sem Incidência</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="aliquota_cofins">Alíquota COFINS (%):</label>
+                            <input type="number" id="aliquota_cofins" step="0.0001" min="0" max="100" value="0.0000">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cst_ipi">CST IPI (opcional):</label>
+                            <select id="cst_ipi">
+                                <option value="">Não se aplica</option>
+                                <option value="00">00 - Entrada com recuperação</option>
+                                <option value="49">49 - Outras entradas</option>
+                                <option value="50">50 - Saída tributada</option>
+                                <option value="99">99 - Outras saídas</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="aliquota_ipi">Alíquota IPI (%):</label>
+                            <input type="number" id="aliquota_ipi" step="0.01" min="0" max="100" value="0.00">
+                        </div>
+                    </div>
+                    
+                    <div class="foto-section">
+                        <div class="foto-preview">
+                            <img id="fotoPreview" src="" alt="Foto do produto" style="display: none;">
+                            <div id="fotoPlaceholder" class="foto-placeholder" onclick="showPhotoOptions()">
+                                <span>📷</span>
+                                <p>Clique para adicionar foto</p>
+                            </div>
+                        </div>
+                        <div class="foto-controls">
+                            <input type="file" id="fotoInputGaleria" accept="image/*" style="display: none;" onchange="handlePhotoSelection(this)">
+                            <input type="file" id="fotoInputCamera" accept="image/*" capture="environment" style="display: none;" onchange="handlePhotoSelection(this)">
+                            
+                            <div class="photo-buttons">
+                                <button type="button" id="btnGaleria" class="btn-secondary" onclick="selectFromGallery()" title="Selecionar arquivo de imagem">
+                                    🖼️ Arquivo
+                                </button>
+                                <button type="button" id="btnCamera" class="btn-secondary" onclick="selectFromCamera()" title="Usar câmera/webcam">
+                                    📷 Câmera
+                                </button>
+                            </div>
+                            
+                            <button type="button" id="btnRemoverFoto" class="btn-secondary" style="display: none;" onclick="removePhoto()">
+                                🗑️ Remover Foto
+                            </button>
+                            
+                            <button type="button" id="btnCameraWebRTC" class="btn-secondary" onclick="openCameraModal()" style="display: none;">
+                                🎥 Câmera Avançada
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Salvar</button>
+                        <button type="button" id="btnCancelar" class="btn-secondary" onclick="hideProductForm()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="table-container">
+                <table id="tabelaProdutos">
+                    <thead>
+                        <tr>
+                            <th>Foto</th>
+                            <th>Nome</th>
+                            <th>Código</th>
+                            <th>Preço</th>
+                            <th>Estoque</th>
+                            <th>Categoria</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Camera Modal -->
+    <div id="cameraModal" class="camera-modal" style="display: none;">
+        <div class="camera-modal-content">
+            <div class="camera-header">
+                <h3>Câmera</h3>
+                <button class="camera-close" onclick="closeCameraModal()">&times;</button>
+            </div>
+            <div class="camera-body">
+                <video id="cameraVideo" autoplay playsinline></video>
+                <canvas id="cameraCanvas" style="display: none;"></canvas>
+            </div>
+            <div class="camera-controls">
+                <button class="btn-primary" onclick="capturePhoto()">📷 Capturar</button>
+                <button class="btn-secondary" onclick="closeCameraModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Barcode Scanner Modal -->
+    <div id="barcodeModal" class="camera-modal" style="display: none;">
+        <div class="camera-modal-content">
+            <div class="camera-header">
+                <h3>📱 Scanner de Código de Barras</h3>
+                <button class="camera-close" onclick="closeBarcodeScanner()">&times;</button>
+            </div>
+            <div class="camera-body">
+                <video id="barcodeVideo" autoplay playsinline></video>
+                <div id="barcodeScanLine" class="scan-line"></div>
+                <div class="scan-instructions">
+                    <p>📍 Posicione o código de barras na linha vermelha</p>
+                    <p id="scanResult" class="scan-result" style="display: none;"></p>
+                </div>
+            </div>
+            <div class="camera-controls">
+                <button class="btn-secondary" onclick="closeBarcodeScanner()">Fechar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/produtos.js"></script>
+</body>
+</html>

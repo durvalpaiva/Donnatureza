@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - Sistema Donnatureza</title>
+    <link href="/static/css/style.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="/static/img/DonnaturezaLogo.png" alt="Donnatureza" class="logo">
+                    <div class="header-text">
+                        <h1>Sistema Donnatureza</h1>
+                    </div>
+                </div>
+                <nav class="header-nav">
+                    <a href="/">Início</a>
+                    <a href="/produtos">Produtos</a>
+                    <a href="/vendas">Vendas</a>
+                    <a href="/catalogo" class="active">Catálogo</a>
+                    <a href="/estoque">Estoque</a>
+                    <a href="/relatorios">Relatórios</a>
+                </nav>
+            </div>
+        </header>
+        
+        <main>
+            <div class="catalog-header">
+                <h2>📖 Catálogo de Produtos</h2>
+                <div class="catalog-actions">
+                    <div class="catalog-filters">
+                        <input type="text" id="filterProducts" placeholder="🔍 Buscar produtos no catálogo...">
+                        <select id="categoryFilter">
+                            <option value="">Todas as categorias</option>
+                        </select>
+                    </div>
+                    <div class="catalog-tools">
+                        <button id="btnPrint" class="btn-secondary" onclick="printCatalog()">
+                            🖨️ Imprimir
+                        </button>
+                        <button id="btnDownloadPDF" class="btn-primary" onclick="downloadPDF()">
+                            📄 Baixar PDF
+                        </button>
+                        <button id="btnToggleView" class="btn-secondary" onclick="toggleView()">
+                            📱 Modo Touch
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="catalog-info">
+                <div class="info-card">
+                    <span id="totalProducts">0</span> produtos
+                </div>
+                <div class="info-card">
+                    <span id="visibleProducts">0</span> visíveis
+                </div>
+                <div class="info-card" id="salesModeIndicator" style="display: none;">
+                    🛒 Modo Venda Ativo
+                </div>
+            </div>
+            
+            <!-- Print Header (only visible when printing) -->
+            <div class="print-header" style="display: none;">
+                <div class="print-logo">
+                    <img src="/static/img/DonnaturezaLogo.png" alt="Donnatureza">
+                    <div>
+                        <h1>DONNATUREZA</h1>
+                        <p>Catálogo de Produtos</p>
+                        <p>Gerado em: <span id="printDate"></span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="catalogGrid" class="catalog-grid">
+                <div class="loading-message">
+                    <p>📦 Carregando produtos...</p>
+                </div>
+            </div>
+            
+            <!-- Sales Mode Instructions -->
+            <div id="salesInstructions" class="sales-instructions" style="display: none;">
+                <div class="instructions-content">
+                    <h3>🛒 Modo Venda Ativo</h3>
+                    <p>Toque nos produtos para adicioná-los à venda</p>
+                    <p>Os produtos selecionados aparecerão na aba <strong>Vendas</strong></p>
+                    <button class="btn-primary" onclick="goToSales()">Ir para Vendas</button>
+                    <button class="btn-secondary" onclick="exitSalesMode()">Sair do Modo Venda</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Product Detail Modal -->
+    <div id="productModal" class="catalog-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalProductName">Produto</h3>
+                <button class="modal-close" onclick="closeProductModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modalProductImage" src="" alt="Produto">
+                </div>
+                <div class="modal-details">
+                    <p><strong>Código:</strong> <span id="modalProductCode"></span></p>
+                    <p><strong>Categoria:</strong> <span id="modalProductCategory"></span></p>
+                    <p><strong>Preço:</strong> <span id="modalProductPrice"></span></p>
+                    <p><strong>Estoque:</strong> <span id="modalProductStock"></span></p>
+                    <p><strong>Descrição:</strong></p>
+                    <p id="modalProductDescription"></p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="addToSaleFromModal()">🛒 Adicionar à Venda</button>
+                <button class="btn-secondary" onclick="closeProductModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/app.js?v=4"></script>
+    <script src="/static/js/catalogo.js?v=4"></script>
+</body>
+</html>
