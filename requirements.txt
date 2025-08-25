@@ -16,10 +16,10 @@ psycopg2-binary==2.9.9
 pydantic==2.4.2
 pydantic-settings==2.0.3
 
-# NFC-e
-lxml==4.9.3
-xmlsec==1.3.13
-cryptography==41.0.7
+# NFC-e (temporariamente removido para deploy - reimplementar posteriormente)
+# lxml==4.9.3
+# xmlsec==1.3.13  # Requer xmlsec1 no sistema
+# cryptography==41.0.7
 requests==2.31.0
 
 # Impressão e QR Code
@@ -30,16 +30,16 @@ qrcode==7.4.2
 pytest==7.4.3
 pytest-asyncio==0.21.1
 
-# Gráficos e Relatórios
-matplotlib==3.8.0
-plotly==5.17.0
-pandas==2.1.3
+# Gráficos e Relatórios (temporariamente removido para deploy mais rápido)
+# matplotlib==3.8.0
+# plotly==5.17.0
+# pandas==2.1.3
 reportlab==4.0.4
 openpyxl==3.1.2
 
-# Autenticação
-passlib==1.7.4
-python-jose==3.3.0
+# Autenticação (temporariamente removido)
+# passlib==1.7.4
+# python-jose==3.3.0
 
 # Utilitários
 python-dotenv==1.0.0
