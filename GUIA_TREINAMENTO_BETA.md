@@ -3,9 +3,9 @@
 
 ---
 
-## 👋 **PARA A CONTADORA RESPONSÁVEL PELO TREINAMENTO**
+## 👋 **PARA KATIENE RESPONSÁVEL PELO TREINAMENTO**
 
-Este guia foi desenvolvido especificamente para **orientar o treinamento dos funcionários da Donnatureza** durante a **Fase Beta** do sistema. O sistema já está **100% funcional** e pronto para uso em produção.
+Este guia foi desenvolvido especificamente para **orientar o treinamento dos funcionários da Donnatureza** durante a **Fase Beta** do sistema. O sistema já DEVERIA está **100% funcional** e pronto para uso em produção.
 
 **🌐 Acesso ao Sistema**: [https://donnatureza.com.br](https://donnatureza.com.br)
 
@@ -143,7 +143,7 @@ Este guia foi desenvolvido especificamente para **orientar o treinamento dos fun
    - Botão "Exportar Excel"
    - Dados organizados para contabilidade
 
-#### 💼 **Para a Contadora**
+#### 💼 **Para a Katiene**
 - **Todos os relatórios são exportáveis** em Excel
 - **Dados já organizados** para lançamentos contábeis
 - **Histórico completo** de todas as transações
@@ -283,6 +283,7 @@ Durante toda a Fase Beta, **anotaremos**:
 
 ---
 
-**💚 Sistema desenvolvido com carinho para a equipe Donnatureza**
+**💚 Sistema desenvolvido com carinho por Dú o filho preterido, mas que ama muito sua mãezinha, para a equipe Donnatureza e para ela Mesma**
+
 
 **Última atualização**: Agosto 2025 • **Versão**: 1.0 Beta
